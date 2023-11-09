@@ -3,10 +3,20 @@ This repository provides Vagrant resources various projects.
 
 ## Getting Started
 ### Install Vagrant and VirtualBox
-To install Vagrant on an Ubuntu machine with VirtualBox as the provider, run:
-```shell
+To install Vagrant on an Ubuntu 22.04 machine with VirtualBox as the provider, first add the VirtualBox repository to the apt sources list:
+```
+shell
+sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian jammy contrib" >> /etc/apt/sources.list
+wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg
+```
+```
+shell
 sudo apt update
-sudo apt install virtualbox virtualbox-guest-additions-iso vagrant 
+# Install VirtualBox
+sudo apt install virtualbox-6.1
+# For ChameleonCloud: Install generic linux headers for VirtualBox to provide hardware support for VMs
+sudo apt install linux-headers-generic linux-headers-`uname -r`
+sudo /sbin/vboxconfig
 ```
 
 ### Clone the repository
