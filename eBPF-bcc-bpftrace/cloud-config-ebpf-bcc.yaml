@@ -1,0 +1,63 @@
+#cloud-config
+package_update: true
+packages:
+  - zip
+  - bison
+  - build-essential
+  - cmake
+  - flex
+  - git
+  - libedit-dev 
+  - libllvm14
+  - llvm-14-dev
+  - libclang-14-dev 
+  - python3
+  - zlib1g-dev
+  - libelf-dev
+  - libfl-dev
+  - python3-setuptools
+  - liblzma-dev
+  - libdebuginfod-dev
+  - arping
+  - netperf
+  - iperf
+  - python-is-python3
+  - clang
+  - llvm
+  - libpcap-dev
+  - libc6-dev-i386
+  - linux-tools-common
+  - linux-tools-generic
+  - libbpf-dev
+  - tcpdump
+  - bpftrace
+
+runcmd:
+  - sudo apt install linux-tools-$(uname -r) linux-headers-$(uname -r)
+  - cd /root
+  - export HOME=/root
+  - export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  - git clone https://github.com/iovisor/bcc.git
+  - mkdir bcc/build; cd bcc/build
+  - cmake .. -DENABLE_LLVM_SHARED=1
+  - make
+  - sudo make install
+  - cmake -DPYTHON_CMD=python3 ..
+  - pushd src/python/
+  - make
+  - sudo make install
+  - cd /root
+  - git clone --recurse-submodules https://github.com/xdp-project/xdp-tutorial.git
+  - cd xdp-tutorial/
+  - ./configure
+  - make
+
+
+write_files:
+- content: |
+      bcctools=/usr/share/bcc/tools
+      bccexamples=/usr/share/bcc/examples
+      export PATH=$bcctools:$bccexamples:$PATH
+  path: /root/.bashrc
+  permissions: '0644'
+  append: true
